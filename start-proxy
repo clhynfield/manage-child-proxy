@@ -11,13 +11,14 @@ clean_up() {
 trap 'clean_up' 'EXIT'
 
 parent_user=${PROXY_USER:-$USER}
+parent_host=${PARENT_PROXY:-proxy}
 stty -echo; read 'parent_password'; stty echo
 
-cat "$squid_template"
+cat "$squid_template" \
   | sed "s/USER/$parent_user/g" \
   | sed "s/PASSWORD/$parent_password/g" \
-  | sed "s/PARENT_PROXY/${parent_host:-proxy}/g" \
-  > "$squid_config"
+  | sed "s/PARENT_PROXY/${parent_host}/g" \
+  | cat > "$squid_config"
 
 "$squid_bin" -YC -f "$squid_config"
 

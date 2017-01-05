@@ -1,0 +1,24 @@
+#!/bin/sh
+
+squid_bin='/usr/sbin/squid3'
+squid_config='/etc/squid3/squid.conf'
+squid_template="${squid_config}.template"
+
+clean_up() {
+    if [ -f "$squid_config" ]; then rm "$squid_config"; fi
+}
+
+trap 'clean_up' 'EXIT'
+
+parent_user=${PROXY_USER:-$USER}
+stty -echo; read 'parent_password'; stty echo
+
+cat "$squid_template"
+  | sed "s/USER/$parent_user/g" \
+  | sed "s/PASSWORD/$parent_password/g" \
+  | sed "s/PARENT_PROXY/${parent_host:-proxy}/g" \
+  > "$squid_config"
+
+"$squid_bin" -YC -f "$squid_config"
+
+sleep 5

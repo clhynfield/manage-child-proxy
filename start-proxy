@@ -5,7 +5,9 @@ squid_config='/etc/squid3/squid.conf'
 squid_template="${squid_config}.template"
 
 clean_up() {
-    if [ -f "$squid_config" ]; then rm "$squid_config"; fi
+    if [ -f "$squid_config" ]; then
+        cp "$squid_template" "$squid_config"
+    fi
 }
 
 trap 'clean_up' 'EXIT'

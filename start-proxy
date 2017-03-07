@@ -2,7 +2,7 @@
 
 squid_bin='/usr/sbin/squid3'
 squid_config='/etc/squid3/squid.conf'
-squid_template="${squid_config}.template"
+squid_template="squid.conf.template"
 
 clean_up() {
     if [ -f "$squid_config" ]; then
